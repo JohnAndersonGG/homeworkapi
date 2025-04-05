@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Picture of the Day (API)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin: 20px;
+    }
+
+    #greeting {
+      font-size: 1.5em;
+      margin: 15px;
+      text-align: center;
+    }
+
+    img {
+      width: 500px;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    #author {
+      font-size: 0.9em;
+      margin-top: 10px;
+      color: #555;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📸 Picture of the Day</h1>
+  <div id="greeting">Click the button for a surprise!</div>
+  <img id="image" src="" alt="Random Image" />
+  <div id="author"></div>
+  <button onclick="generatePicture()">Generate</button>
+
+  <script>
+    const greetings = [
+      "Good morning, sunshine! ☀️",
+      "Hello there! 😊",
+      "Wishing you a beautiful day! 🌸",
+      "Stay awesome! 💪",
+      "Here's a smile for you! 😄",
+      "Peace and positivity your way ✌️",
+      "Enjoy the little things 🌼",
+      "You got this! 🚀"
+    ];
+
+    async function generatePicture() {
+      const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+      document.getElementById('greeting').textContent = greeting;
+
+      try {
+        // API call to API Ninjas
+        const response = await fetch("https://api.api-ninjas.com/v1/randomimage", {
+          headers: {
+            "X-Api-Key": "Nn7Pufs8cN0qSKyVCW39kw==4HCV5hgFHiBj73o7"
+          }
+        });
+
+        // Log the raw response text to check what's being returned
+        const responseText = await response.text();
+        console.log("Raw Response:", responseText);
+
+        // If the response is a Base64-encoded image, use it as the image source
+        const base64Image = responseText.trim();
+        if (base64Image) {
+          document.getElementById("image").src = `data:image/jpeg;base64,${base64Image}`;
+          document.getElementById("author").textContent = `📷 Photo from API Ninjas`;
+        } else {
+          throw new Error("No image data found");
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch image:", error);
+        document.getElementById("greeting").textContent = "Oops! Couldn't fetch image.";
+        document.getElementById("image").src = "";
+        document.getElementById("author").textContent = "";
+      }
+    }
+  </script>
+
+</body>
+</html>
